@@ -17,6 +17,9 @@ namespace NextHorizon.Controllers
 
         public IActionResult HelpCenter()
         {
+            ViewBag.AgentName = HttpContext.Session.GetString("FullName") ?? "Agent";
+            ViewBag.AgentUsername = HttpContext.Session.GetString("Username") ?? "";
+            ViewBag.UserId = HttpContext.Session.GetInt32("UserId") ?? 0;
             return View();
         }
 
@@ -26,10 +29,7 @@ namespace NextHorizon.Controllers
             return View(faqs);
         }
 
-        public IActionResult CreateFAQ()
-        {
-            return View();
-        }
+        public IActionResult CreateFAQ() => View();
 
         [HttpPost]
         public async Task<IActionResult> CreateFAQ(FAQ faq)
@@ -109,7 +109,6 @@ namespace NextHorizon.Controllers
                 return Json(new { success = true, status = model.Status });
             }
 
-            // No record exists yet — create one
             var newRecord = new Agent
             {
                 AgentName = model.AgentName,

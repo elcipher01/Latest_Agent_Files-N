@@ -1,20 +1,15 @@
 ﻿@*
 =============================================================
   AGENT HELP CENTER
-  Agent-facing Help Center page
-
-  Runs INSIDE your existing shared layout.
-  No <html>, <head>, <body>, sidebar or topbar here.
-
-  Your shared layout (_AgentLayout.cshtml) must have:
-      @RenderSection("Styles",  required: false)   ← inside <head>
-      @RenderSection("Scripts", required: false)   ← before </body>
 =============================================================
 *@
 
 @{
     Layout = "_AgentLayout";
     ViewData["Title"] = "Agent Portal - Help Center";
+  var agentName = ViewBag.AgentName as string ?? "Agent";
+if (string.IsNullOrWhiteSpace(agentName)) agentName = "Agent";
+var agentInitials = string.Join("", agentName.Trim().Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries).Select(w => w[0].ToString())).ToUpper();
 }
 
 @section Styles {
@@ -34,7 +29,7 @@
 .hc-shell {
     display: flex;
     width: 100%;
-    height: calc(100vh - 60px);  /* 60px = your topbar */
+    height: calc(100vh - 60px);
     overflow: hidden;
     font-family: 'Poppins', sans-serif;
     background: #f4f6f8;
@@ -73,7 +68,6 @@
     border-right: 1px solid #e8e8e8;
 }
 
-/* Header */
 .hcl-header { padding: 20px 20px 12px; flex-shrink: 0; }
 .hcl-title  {
     font-size: 13px; font-weight: 800; letter-spacing: .5px;
@@ -81,7 +75,6 @@
 }
 .hcl-sub { font-size: 11px; color: #999; margin-bottom: 16px; }
 
-/* New Ticket btn */
 .hcl-new-btn {
     font-family: 'Poppins', sans-serif;
     font-size: 12px; font-weight: 700;
@@ -93,13 +86,11 @@
 }
 .hcl-new-btn:hover { opacity: .85; }
 
-/* Top row */
 .hcl-toprow {
     display: flex; justify-content: space-between;
     align-items: flex-start; margin-bottom: 14px;
 }
 
-/* Status tabs */
 .hcl-tabs { display: flex; gap: 16px; border-bottom: 2px solid #f0f0f0; margin-bottom: 12px; }
 .hcl-tab {
     font-size: 11px; font-weight: 700; letter-spacing: .6px;
@@ -109,7 +100,6 @@
 }
 .hcl-tab.active { color: #1a1a2e; border-bottom-color: #1a1a2e; }
 
-/* Type pills */
 .hcl-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
 .hcl-pill {
     font-size: 11px; font-weight: 500; padding: 5px 14px;
@@ -119,7 +109,6 @@
 }
 .hcl-pill.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
 
-/* Search */
 .hcl-search {
     display: flex; align-items: center; gap: 7px;
     border: 1px solid #e0e0e0; border-radius: 8px;
@@ -133,7 +122,6 @@
 }
 .hcl-search input::placeholder { color: #bbb; }
 
-/* Ticket card list */
 .hcl-list { flex: 1; overflow-y: auto; }
 
 .hcl-card {
@@ -150,7 +138,6 @@
     width: 3px; background: #1a1a2e; border-radius: 0 3px 3px 0;
 }
 
-/* Avatar */
 .hcl-av {
     width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
@@ -162,7 +149,6 @@
 .hcl-name  { font-size: 12.5px; font-weight: 700; color: #1a1a2e; }
 .hcl-email { font-size: 10.5px; color: #bbb; }
 
-/* Customer / Seller badge */
 .hcl-stype {
     font-size: 9px; font-weight: 800; padding: 2px 7px;
     border-radius: 4px; text-transform: uppercase; letter-spacing: .5px;
@@ -173,7 +159,6 @@
 .hcl-subject { font-size: 12px; color: #333; line-height: 1.4; margin-bottom: 6px; }
 .hcl-tid     { font-size: 10.5px; color: #bbb; }
 
-/* Status badges (inline in card) */
 .hcl-sbadge {
     display: inline-block; font-size: 9.5px; font-weight: 800;
     padding: 3px 9px; border-radius: 5px;
@@ -185,7 +170,7 @@
 .hcl-sbadge.closed  { background: #f0f0f0; color: #999; }
 
 /* ═══════════════════════════════════════════════════
-   COL 2 — CHAT  (center, biggest)
+   COL 2 — CHAT
 ═══════════════════════════════════════════════════ */
 .hc-col-chat {
     flex: 1;
@@ -196,7 +181,6 @@
     border-right: 1px solid #e8e8e8;
 }
 
-/* Empty state */
 .hcc-empty {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -205,7 +189,6 @@
 .hcc-empty i { font-size: 54px; margin-bottom: 18px; }
 .hcc-empty p { font-size: 13px; font-weight: 500; color: #bbb; line-height: 1.6; }
 
-/* Chat panel */
 #hccPanel {
     display: none;
     flex-direction: column;
@@ -213,7 +196,6 @@
     overflow: hidden;
 }
 
-/* Chat topbar */
 .hcc-topbar {
     background: #fff;
     padding: 12px 22px;
@@ -226,7 +208,6 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 700; color: #fff;
 }
-.hcc-name-wrap {}
 .hcc-name {
     font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;
 }
@@ -238,7 +219,6 @@
 .hcc-stype-badge.seller   { background: #fff3e0; color: #e67e22; }
 .hcc-meta { font-size: 11px; color: #aaa; margin-top: 2px; }
 
-/* ── TIMER ──────────────────────────────────────────────────── */
 .hcc-timer-wrap {
     margin-left: auto;
     display: flex; align-items: center; gap: 10px;
@@ -261,7 +241,6 @@
     50%       { opacity: .6; }
 }
 
-/* End Conversation button */
 .hcc-end-btn {
     font-family: 'Poppins', sans-serif;
     font-size: 11.5px; font-weight: 700;
@@ -273,7 +252,6 @@
 }
 .hcc-end-btn:hover { opacity: .85; }
 
-/* Topbar icon buttons (transfer, resolve) */
 .hcc-icon-btn {
     width: 32px; height: 32px; border-radius: 8px;
     border: 1px solid #e0e0e0; background: #fff;
@@ -283,14 +261,12 @@
 }
 .hcc-icon-btn:hover { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
 
-/* Chat messages body */
 .hcc-body {
     flex: 1; overflow-y: auto;
     padding: 24px 28px;
     display: flex; flex-direction: column; gap: 18px;
 }
 
-/* Date divider */
 .hcc-date-div {
     text-align: center; font-size: 10.5px; color: #bbb;
     font-weight: 500; position: relative; margin: 4px 0;
@@ -302,7 +278,6 @@
 .hcc-date-div::before { left: 0; }
 .hcc-date-div::after  { right: 0; }
 
-/* Bubbles */
 .hcc-msg { display: flex; gap: 12px; max-width: 75%; }
 .hcc-msg.agent { flex-direction: row-reverse; align-self: flex-end; }
 .hcc-msg-av {
@@ -325,7 +300,6 @@
 .hcc-msg:not(.agent) .hcc-msg-bub { border-radius: 14px 14px 14px 2px; }
 .hcc-msg-time { font-size: 10px; color: #bbb; margin-top: 5px; }
 
-/* End-conversation system message */
 .hcc-system-msg {
     text-align: center; font-size: 11.5px; color: #aaa;
     font-weight: 500; padding: 8px 20px;
@@ -333,7 +307,6 @@
     align-self: center; margin: 4px 0;
 }
 
-/* Chat input footer */
 .hcc-footer {
     padding: 16px 22px 14px;
     border-top: 1px solid #efefef;
@@ -357,7 +330,6 @@
 }
 .hcc-send-btn:hover { background: #333; }
 
-/* Footer action buttons */
 .hcc-footer-btns { display: flex; gap: 8px; }
 .hcc-faction {
     display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -372,11 +344,10 @@
 }
 .hcc-faction.resolve:hover { background: #333; }
 
-/* Disabled input when conversation ended */
 .hcc-input-row.ended { opacity: .5; pointer-events: none; }
 
 /* ═══════════════════════════════════════════════════
-   COL 3 — TICKET DETAILS  (right sidebar)
+   COL 3 — TICKET DETAILS
 ═══════════════════════════════════════════════════ */
 .hc-col-detail {
     width: 300px;
@@ -387,7 +358,6 @@
     background: #fff;
 }
 
-/* Detail empty */
 .hcd-empty {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -396,7 +366,6 @@
 .hcd-empty i { font-size: 36px; margin-bottom: 12px; }
 .hcd-empty p { font-size: 12px; color: #bbb; line-height: 1.6; }
 
-/* Detail panel scroll area */
 #hcDetailPanel {
     display: none;
     flex-direction: column;
@@ -406,7 +375,6 @@
 #hcDetailPanel::-webkit-scrollbar { width: 4px; }
 #hcDetailPanel::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
 
-/* Label bar */
 .hcd-lbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 18px 10px;
@@ -417,7 +385,6 @@
     letter-spacing: .8px; color: #aaa;
 }
 
-/* Agent Status Section */
 .hcd-agent-status-section {
     padding: 14px 18px 12px;
     border-bottom: 1px solid #f0f0f0;
@@ -425,70 +392,29 @@
 }
 
 .hcd-status-label {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .7px;
-    color: #bbb;
-    margin-bottom: 8px;
-    display: block;
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .7px; color: #bbb; margin-bottom: 8px; display: block;
 }
 
-.hcd-status-wrapper {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
+.hcd-status-wrapper { display: flex; gap: 8px; align-items: center; }
 
 .hcd-status-dropdown {
-    flex: 1;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    padding: 8px 12px;
-    color: #333;
-    background: #fafafa;
-    outline: none;
-    cursor: pointer;
-    transition: all .15s;
+    flex: 1; border: 1px solid #e0e0e0; border-radius: 6px;
+    font-family: 'Poppins', sans-serif; font-size: 12px;
+    padding: 8px 12px; color: #333; background: #fafafa;
+    outline: none; cursor: pointer; transition: all .15s;
 }
+.hcd-status-dropdown:hover { border-color: #d0d0d0; background: #f5f5f5; }
+.hcd-status-dropdown:focus { border-color: #1a1a2e; background: #fff; box-shadow: 0 0 0 3px rgba(26,26,46,.1); }
 
-.hcd-status-dropdown:hover {
-    border-color: #d0d0d0;
-    background: #f5f5f5;
-}
-
-.hcd-status-dropdown:focus {
-    border-color: #1a1a2e;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
-}
-
-/* Status indicator dot */
 .hcd-status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    transition: background .3s;
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0; transition: background .3s;
 }
-
-.hcd-status-indicator.available {
-    background: #27ae60;
-}
-
-.hcd-status-indicator.break {
-    background: #e67e22;
-}
-
-.hcd-status-indicator.lunch {
-    background: #3498db;
-}
-
-.hcd-status-indicator.eos {
-    background: #e74c3c;
-}
+.hcd-status-indicator.available { background: #27ae60; }
+.hcd-status-indicator.break     { background: #e67e22; }
+.hcd-status-indicator.lunch     { background: #3498db; }
+.hcd-status-indicator.eos       { background: #e74c3c; }
 
 .hcd-pri {
     font-size: 10px; font-weight: 800; padding: 3px 10px;
@@ -499,7 +425,6 @@
 .hcd-pri.low    { background: #e8f8ee; color: #27ae60; }
 .hcd-pri.urgent { background: #1a1a2e; color: #fff; }
 
-/* Subject + status */
 .hcd-subj-blk { padding: 14px 18px 12px; border-bottom: 1px solid #f0f0f0; }
 .hcd-subj { font-size: 13px; font-weight: 700; color: #1a1a2e; line-height: 1.4; margin-bottom: 8px; }
 .hcd-stat-pill {
@@ -512,7 +437,6 @@
 .hcd-stat-pill.pending { background: #fff3e0; color: #e67e22; }
 .hcd-stat-pill.closed  { background: #f0f0f0; color: #999; }
 
-/* Sender block */
 .hcd-sender {
     display: flex; align-items: center; gap: 10px;
     padding: 13px 18px; border-bottom: 1px solid #f0f0f0;
@@ -532,7 +456,6 @@
 .hcd-stype-pill.customer { background: #e8f4fc; color: #2980b9; }
 .hcd-stype-pill.seller   { background: #fff3e0; color: #e67e22; }
 
-/* Info rows */
 .hcd-info-section { border-bottom: 1px solid #f0f0f0; }
 .hcd-info-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -548,7 +471,6 @@
 .hcd-info-val.medium  { color: #e67e22; }
 .hcd-info-val.low     { color: #27ae60; }
 
-/* Reason block */
 .hcd-reason-blk { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; }
 .hcd-section-lbl {
     font-size: 10px; font-weight: 800; text-transform: uppercase;
@@ -559,7 +481,6 @@
     background: #f7f8fa; border-radius: 8px; padding: 11px 13px;
 }
 
-/* Attachments */
 .hcd-attach-blk { padding: 12px 18px; border-bottom: 1px solid #f0f0f0; }
 .hcd-chips { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
 .hcd-chip {
@@ -571,24 +492,20 @@
 .hcd-chip:hover { background: #eef0f2; }
 .hcd-chip i { color: #bbb; font-size: 12px; }
 
-/* Update status */
 .hcd-update-blk { padding: 14px 18px; }
 .hcd-update-sel {
-    width: 100%;
-    border: 1px solid #e0e0e0; border-radius: 8px;
+    width: 100%; border: 1px solid #e0e0e0; border-radius: 8px;
     font-family: 'Poppins', sans-serif; font-size: 12px;
     padding: 9px 12px; color: #333; background: #fafafa;
     outline: none; cursor: pointer; margin-bottom: 8px;
 }
 .hcd-save-btn {
-    width: 100%;
-    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700;
+    width: 100%; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700;
     padding: 10px; background: #1a1a2e; color: #fff;
     border: none; border-radius: 8px; cursor: pointer; transition: opacity .15s;
 }
 .hcd-save-btn:hover { opacity: .85; }
 
-/* ── Scrollbars ─────────────────────────────────────────────── */
 .hcl-list::-webkit-scrollbar,
 .hcc-body::-webkit-scrollbar { width: 4px; }
 .hcl-list::-webkit-scrollbar-track,
@@ -599,33 +516,28 @@
 </style>
 }
 
-@* ══════════════════════════════════════════════════════
-   HTML
-══════════════════════════════════════════════════════ *@
-
 <div class="hc-shell">
 
-    <!-- ══════ COL 1 — TICKET LIST ══════ -->
+    <!-- COL 1 — TICKET LIST -->
     <div class="hc-col-list" id="hcColList">
         <div class="hcl-header">
             <div class="hcl-toprow">
-    <div>
-        <div class="hcl-title">Today's Record</div>
-        <div class="hcl-sub">Queueing and resolved support tickets</div>
-    </div>
-</div>
+                <div>
+                    <div class="hcl-title">Today's Record</div>
+                    <div class="hcl-sub">Queueing and resolved support tickets</div>
+                </div>
+            </div>
 
-<!-- Summary box -->
-<div style="display:flex;gap:8px;margin-bottom:14px">
-    <div style="flex:1;background:#f7f8fa;border:1px solid #eee;border-radius:10px;padding:10px 12px;text-align:center">
-        <div style="font-size:20px;font-weight:800;color:#1a1a2e" id="statQueueing">0</div>
-        <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Queueing</div>
-    </div>
-    <div style="flex:1;background:#e8f8ee;border:1px solid #b2dfcc;border-radius:10px;padding:10px 12px;text-align:center">
-        <div style="font-size:20px;font-weight:800;color:#27ae60" id="statResolved">0</div>
-        <div style="font-size:10px;font-weight:600;color:#27ae60;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Resolved</div>
-    </div>
-</div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+                <div style="flex:1;background:#f7f8fa;border:1px solid #eee;border-radius:10px;padding:10px 12px;text-align:center">
+                    <div style="font-size:20px;font-weight:800;color:#1a1a2e" id="statQueueing">0</div>
+                    <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Queueing</div>
+                </div>
+                <div style="flex:1;background:#e8f8ee;border:1px solid #b2dfcc;border-radius:10px;padding:10px 12px;text-align:center">
+                    <div style="font-size:20px;font-weight:800;color:#27ae60" id="statResolved">0</div>
+                    <div style="font-size:10px;font-weight:600;color:#27ae60;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Resolved</div>
+                </div>
+            </div>
 
             <div class="hcl-tabs">
                 <div class="hcl-tab active" onclick="hcSetStatus(this,'queueing')">Queueing</div>
@@ -637,24 +549,19 @@
                 <input type="text" id="hclQ" placeholder="Search waiting lines..." oninput="hcFilter()" />
             </div>
         </div>
-
-        <!-- Card list (no table headers) -->
         <div class="hcl-list" id="hclList"></div>
     </div>
 
-    <div class="hc-resizer" id="hcResizerLeft" title="Drag to resize queueing and chat"></div>
+    <div class="hc-resizer" id="hcResizerLeft"></div>
 
-    <!-- ══════ COL 2 — CHAT (center, biggest) ══════ -->
+    <!-- COL 2 — CHAT -->
     <div class="hc-col-chat" id="hcColChat">
-
         <div class="hcc-empty" id="hccEmpty">
             <i class="fas fa-comments"></i>
             <p>Click <strong>View</strong> on any ticket<br/>to open the conversation</p>
         </div>
 
         <div id="hccPanel">
-
-            <!-- Chat topbar: avatar + name + badge · meta · TIMER · End Conversation · icon btns -->
             <div class="hcc-topbar">
                 <div class="hcc-av" id="hccAv">—</div>
                 <div class="hcc-name-wrap">
@@ -664,32 +571,25 @@
                     </div>
                     <div class="hcc-meta" id="hccMeta">—</div>
                 </div>
-
                 <div class="hcc-timer-wrap">
-                    <!-- 3-minute countdown timer -->
                     <div class="hcc-timer" id="hccTimer">
                         <i class="fas fa-clock"></i>
                         <span id="hccTimerVal">3:00</span>
                     </div>
-                    <!-- End Conversation -->
                     <button class="hcc-end-btn" id="hccEndBtn" onclick="hcEndConversation()">
                         <i class="fas fa-phone-slash"></i> End Conversation
                     </button>
-                    <!-- Transfer -->
                     <button class="hcc-icon-btn" title="Transfer" onclick="hcTransfer()">
                         <i class="fas fa-share"></i>
                     </button>
-                    <!-- Resolve -->
                     <button class="hcc-icon-btn" title="Resolve" onclick="hcResolve()">
                         <i class="fas fa-check"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Messages -->
             <div class="hcc-body" id="hccBody"></div>
 
-            <!-- Input + action buttons -->
             <div class="hcc-footer">
                 <div class="hcc-input-row" id="hccInputRow">
                     <input type="text" id="hccChatIn"
@@ -707,23 +607,19 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <div class="hc-resizer" id="hcResizerRight" title="Drag to resize chat and ticket details"></div>
+    <div class="hc-resizer" id="hcResizerRight"></div>
 
-    <!-- ══════ COL 3 — TICKET DETAILS ══════ -->
+    <!-- COL 3 — TICKET DETAILS -->
     <div class="hc-col-detail" id="hcColDetail">
-
         <div class="hcd-empty" id="hcdEmpty">
             <i class="fas fa-file-alt"></i>
             <p>Ticket details<br/>will appear here</p>
         </div>
 
         <div id="hcDetailPanel">
-
-            <!-- Agent Status Section (Top of Ticket Detail) -->
             <div class="hcd-agent-status-section">
                 <div class="hcd-status-label">Your Status</div>
                 <div class="hcd-status-wrapper">
@@ -783,21 +679,22 @@
                 </select>
                 <button class="hcd-save-btn" onclick="hcSaveStatus()">Save Status</button>
             </div>
-
         </div>
     </div>
-
 </div>
 
 @section Scripts {
 <script>
 (function () {
 
+    /* ── logged-in agent from session ─────────────────────────── */
+    var AGENT_NAME     = '@agentName';
+    var AGENT_INITIALS = '@agentInitials';
+
     /* ── helpers ──────────────────────────────────────────────── */
     const COLS = ['#2980b9','#e67e22','#27ae60','#8e44ad','#e74c3c','#16a085','#d35400','#2c3e50'];
     function ac(n) { let h=0; for(let i=0;i<n.length;i++) h=n.charCodeAt(i)+((h<<5)-h); return COLS[Math.abs(h)%COLS.length]; }
     function ini(n) { return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
-    function cap(s) { return s ? s[0].toUpperCase()+s.slice(1) : ''; }
     function isResolvedStatus(s) { return s === 'closed' || s === 'resolved'; }
 
     /* ── seed data ────────────────────────────────────────────── */
@@ -810,7 +707,7 @@
             reason:'Hi, I placed my order (#ORD-8831) almost two weeks ago and it still has not arrived. The tracking has not updated since March 13. This was a gift and I am very worried. Please help resolve this as soon as possible!',
             attachments:['order_screenshot.png'],
             messages:[
-                { from:'Maria Reyes',   role:'user',  text:'Hi, tracking hasn\'t updated since March 13. Please help!', time:'Mar 17 · 9:42 AM' },
+                { from:'Maria Reyes', role:'user', text:'Hi, tracking hasn\'t updated since March 13. Please help!', time:'Mar 17 · 9:42 AM' },
                 { from:'Agent M. Rivera', role:'agent', text:'Hi Maria! I\'m so sorry to hear that. I\'ve escalated this to our logistics team and will follow up within 2 hours with a full update.', time:'Mar 17 · 10:05 AM' },
             ]
         },
@@ -833,7 +730,7 @@
             reason:'My GCash was charged ₱2,350 for my order but the platform still shows payment as failed. The money is gone from my account. Please investigate and resolve this immediately.',
             attachments:['gcash_transaction.png'],
             messages:[
-                { from:'Ana Santos',    role:'user',  text:'My GCash was charged ₱2,350 but the order shows payment failed. Please refund or confirm the order.', time:'Mar 15 · 11:05 AM' },
+                { from:'Ana Santos', role:'user', text:'My GCash was charged ₱2,350 but the order shows payment failed. Please refund or confirm the order.', time:'Mar 15 · 11:05 AM' },
                 { from:'Agent M. Rivera', role:'agent', text:'Hi Ana, I\'ve raised this with our payments team. They\'ll verify the transaction and respond within 24 hours.', time:'Mar 15 · 11:35 AM' },
             ]
         },
@@ -867,8 +764,8 @@
             reason:'Our June payout of ₱12,400 was supposed to be released on July 5 but has not been received. Our bank details have not changed. Please check the status and release the funds immediately.',
             attachments:['bank_statement.pdf'],
             messages:[
-                { from:'Apex Athletics', role:'user',  text:'Our June payout of ₱12,400 has not been received. Please check and release urgently.', time:'Mar 12 · 9:00 AM' },
-                { from:'Agent M. Rivera',  role:'agent', text:'Hi Apex! I\'ve flagged this to our finance team. They\'ll review within 1 business day.', time:'Mar 12 · 10:15 AM' },
+                { from:'Apex Athletics', role:'user', text:'Our June payout of ₱12,400 has not been received. Please check and release urgently.', time:'Mar 12 · 9:00 AM' },
+                { from:'Agent M. Rivera', role:'agent', text:'Hi Apex! I\'ve flagged this to our finance team. They\'ll review within 1 business day.', time:'Mar 12 · 10:15 AM' },
             ]
         },
         {
@@ -879,9 +776,9 @@
             reason:'After resetting my password using the forgot-password link, I keep getting an invalid credentials error even though I followed every step correctly.',
             attachments:[],
             messages:[
-                { from:'Lisa Cruz',     role:'user',  text:'I reset my password but still can\'t log in. Getting invalid credentials every time.', time:'Mar 10 · 3:30 PM' },
+                { from:'Lisa Cruz', role:'user', text:'I reset my password but still can\'t log in. Getting invalid credentials every time.', time:'Mar 10 · 3:30 PM' },
                 { from:'Agent M. Rivera', role:'agent', text:'Hi Lisa! I\'ve manually cleared your session cache. Please try logging in now.', time:'Mar 10 · 4:00 PM' },
-                { from:'Lisa Cruz',     role:'user',  text:'It worked! Thank you so much!', time:'Mar 11 · 8:55 AM' },
+                { from:'Lisa Cruz', role:'user', text:'It worked! Thank you so much!', time:'Mar 11 · 8:55 AM' },
                 { from:'Agent M. Rivera', role:'agent', text:'Great! Marking this as resolved. Reach out if anything else comes up.', time:'Mar 11 · 9:00 AM' },
             ]
         },
@@ -904,14 +801,12 @@
             return function (e) {
                 e.preventDefault();
                 shell.classList.add('resizing');
-
                 function move(ev) { onMove(ev); }
                 function up() {
                     shell.classList.remove('resizing');
                     document.removeEventListener('mousemove', move);
                     document.removeEventListener('mouseup', up);
                 }
-
                 document.addEventListener('mousemove', move);
                 document.addEventListener('mouseup', up);
             };
@@ -919,58 +814,41 @@
 
         leftHandle.addEventListener('mousedown', startDrag(function (ev) {
             const shellRect = shell.getBoundingClientRect();
-            const listMin = 260;
             const detailWidth = colDetail.getBoundingClientRect().width;
-            const chatMin = 420;
-            const handleSpace = 16;
-            const maxList = shellRect.width - detailWidth - chatMin - handleSpace;
-            const nextWidth = clamp(ev.clientX - shellRect.left, listMin, maxList);
-            colList.style.width = `${nextWidth}px`;
+            const maxList = shellRect.width - detailWidth - 420 - 16;
+            colList.style.width = `${clamp(ev.clientX - shellRect.left, 260, maxList)}px`;
         }));
 
         rightHandle.addEventListener('mousedown', startDrag(function (ev) {
             const shellRect = shell.getBoundingClientRect();
-            const detailMin = 240;
             const listWidth = colList.getBoundingClientRect().width;
-            const chatMin = 420;
-            const handleSpace = 16;
-            const maxDetail = shellRect.width - listWidth - chatMin - handleSpace;
-            const nextWidth = clamp(shellRect.right - ev.clientX, detailMin, maxDetail);
-            colDetail.style.width = `${nextWidth}px`;
+            const maxDetail = shellRect.width - listWidth - 420 - 16;
+            colDetail.style.width = `${clamp(shellRect.right - ev.clientX, 240, maxDetail)}px`;
         }));
     }
 
-    /* ── TIMER STATE ──────────────────────────────────────────── */
-    let timerInterval   = null;
-    let timerSeconds    = 180;   /* 3 minutes */
-    let convEnded       = false;
+    /* ── TIMER ────────────────────────────────────────────────── */
+    let timerInterval = null, timerSeconds = 180, convEnded = false;
 
     function startTimer() {
         clearInterval(timerInterval);
-        timerSeconds = 180;
-        convEnded    = false;
+        timerSeconds = 180; convEnded = false;
         updateTimerDisplay();
         document.getElementById('hccInputRow').classList.remove('ended');
         document.getElementById('hccEndBtn').disabled = false;
         document.getElementById('hccEndBtn').style.opacity = '1';
-
         timerInterval = setInterval(function () {
             timerSeconds--;
             updateTimerDisplay();
-            if (timerSeconds <= 0) {
-                clearInterval(timerInterval);
-                timerExpired();
-            }
+            if (timerSeconds <= 0) { clearInterval(timerInterval); timerExpired(); }
         }, 1000);
     }
 
     function updateTimerDisplay() {
-        const m   = Math.floor(timerSeconds / 60);
-        const s   = timerSeconds % 60;
-        const str = m + ':' + (s < 10 ? '0' : '') + s;
-        const el  = document.getElementById('hccTimerVal');
-        const wrap= document.getElementById('hccTimer');
-        if (el) el.textContent = str;
+        const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+        const el = document.getElementById('hccTimerVal');
+        const wrap = document.getElementById('hccTimer');
+        if (el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
         if (wrap) {
             wrap.classList.remove('warning', 'danger');
             if (timerSeconds <= 30) wrap.classList.add('danger');
@@ -998,7 +876,7 @@
         const body = document.getElementById('hccBody');
         if (!body) return;
         const d = document.createElement('div');
-        d.className   = 'hcc-system-msg';
+        d.className = 'hcc-system-msg';
         d.textContent = text;
         body.appendChild(d);
         body.scrollTop = body.scrollHeight;
@@ -1006,7 +884,7 @@
 
     window.hcEndConversation = function () {
         if (convEnded) return;
-        appendSystemMsg('✓ Conversation ended by Agent M. Rivera.');
+        appendSystemMsg('✓ Conversation ended by ' + AGENT_NAME + '.');
         endConv();
     };
 
@@ -1026,26 +904,27 @@
         });
     }
 
-    window.hcSetStatus = function (el, v) { document.querySelectorAll('.hcl-tab').forEach(t => t.classList.remove('active'));  el.classList.add('active'); aStat = v; renderList(); };
+    window.hcSetStatus = function (el, v) {
+        document.querySelectorAll('.hcl-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active'); aStat = v; renderList();
+    };
     window.hcFilter = function () { renderList(); };
 
-    /* ── render card list (NO table, matches screenshot) ─────── */
+    /* ── render list ──────────────────────────────────────────── */
     function renderList() {
         const rows = filtered();
         const list = document.getElementById('hclList');
         list.innerHTML = '';
-
         if (!rows.length) {
             list.innerHTML = '<div style="padding:40px;text-align:center;color:#bbb;font-size:13px">No tickets found.</div>';
             return;
         }
-
         rows.forEach(t => {
-            const stc   = t.stype === 'Customer' ? 'customer' : 'seller';
+            const stc = t.stype === 'Customer' ? 'customer' : 'seller';
             const color = ac(t.sender);
-            const card  = document.createElement('div');
+            const card = document.createElement('div');
             card.className = 'hcl-card' + (t.id === selId ? ' active' : '');
-            card.onclick   = () => openTicket(t.id);
+            card.onclick = () => openTicket(t.id);
             card.innerHTML = `
                 <div class="hcl-av" style="background:${color}">${ini(t.sender)}</div>
                 <div class="hcl-body">
@@ -1069,34 +948,27 @@
         const t = tickets.find(x => x.id === id);
         renderList();
 
-        /* ── COL 2: CHAT ────────────────────────────────── */
         document.getElementById('hccEmpty').style.display = 'none';
         const cp = document.getElementById('hccPanel');
-        cp.style.display = 'flex';
-        cp.style.flexDirection = 'column';
-        cp.style.height = '100%';
+        cp.style.display = 'flex'; cp.style.flexDirection = 'column'; cp.style.height = '100%';
 
-        // topbar
         const cav = document.getElementById('hccAv');
-        cav.style.background = ac(t.sender);
-        cav.textContent = ini(t.sender);
+        cav.style.background = ac(t.sender); cav.textContent = ini(t.sender);
         document.getElementById('hccName').textContent = t.sender;
         const sb = document.getElementById('hccStypeBadge');
         sb.textContent = t.stype;
         sb.className = `hcc-stype-badge ${t.stype === 'Customer' ? 'customer' : 'seller'}`;
-        document.getElementById('hccMeta').textContent = `${t.fullDate}`;
+        document.getElementById('hccMeta').textContent = t.fullDate;
 
-        // messages
         const body = document.getElementById('hccBody');
         body.innerHTML = '';
         const dd = document.createElement('div');
-        dd.className   = 'hcc-date-div';
-        dd.textContent = t.fullDate;
+        dd.className = 'hcc-date-div'; dd.textContent = t.fullDate;
         body.appendChild(dd);
 
         t.messages.forEach(m => {
             const isA = m.role === 'agent';
-            const w   = document.createElement('div');
+            const w = document.createElement('div');
             w.className = 'hcc-msg' + (isA ? ' agent' : '');
             w.innerHTML = `
                 <div class="hcc-msg-av" style="background:${isA ? '#1a1a2e' : ac(m.from)}">${ini(m.from)}</div>
@@ -1109,35 +981,30 @@
         });
         body.scrollTop = body.scrollHeight;
 
-        // reset input + restart timer
         document.getElementById('hccChatIn').value = '';
         document.getElementById('hccChatIn').placeholder = 'Type a reply to the customer…';
         document.getElementById('hccInputRow').classList.remove('ended');
         startTimer();
 
-        /* ── COL 3: DETAILS ─────────────────────────────── */
         document.getElementById('hcdEmpty').style.display = 'none';
         const dp = document.getElementById('hcDetailPanel');
-        dp.style.display = 'flex';
-        dp.style.flexDirection = 'column';
+        dp.style.display = 'flex'; dp.style.flexDirection = 'column';
 
         document.getElementById('hcdSubj').textContent = t.subject;
 
         const sav = document.getElementById('hcdSav');
-        sav.style.background = ac(t.sender);
-        sav.textContent = ini(t.sender);
-        document.getElementById('hcdSname').textContent  = t.sender;
+        sav.style.background = ac(t.sender); sav.textContent = ini(t.sender);
+        document.getElementById('hcdSname').textContent = t.sender;
         document.getElementById('hcdSemail').textContent = t.email;
         const st = document.getElementById('hcdStype');
         st.textContent = t.stype;
-        st.className   = `hcd-stype-pill ${t.stype === 'Customer' ? 'customer' : 'seller'}`;
+        st.className = `hcd-stype-pill ${t.stype === 'Customer' ? 'customer' : 'seller'}`;
 
         document.getElementById('hcdIDate').textContent = t.fullDate;
         document.getElementById('hcdITime').textContent = t.time;
-
         document.getElementById('hcdReason').textContent = t.reason;
 
-        const aBlk  = document.getElementById('hcdAttachBlk');
+        const aBlk = document.getElementById('hcdAttachBlk');
         const chips = document.getElementById('hcdChips');
         if (t.attachments.length) {
             aBlk.style.display = 'block';
@@ -1158,20 +1025,20 @@
     /* ── send ─────────────────────────────────────────────────── */
     window.hcSend = function () {
         if (convEnded) return;
-        const inp  = document.getElementById('hccChatIn');
+        const inp = document.getElementById('hccChatIn');
         const text = inp.value.trim();
         if (!text || !selId) return;
-        const t   = tickets.find(x => x.id === selId);
+        const t = tickets.find(x => x.id === selId);
         const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        t.messages.push({ from: 'Agent M. Rivera', role: 'agent', text, time: `Now · ${now}` });
+        t.messages.push({ from: AGENT_NAME, role: 'agent', text, time: `Now · ${now}` });
 
         const body = document.getElementById('hccBody');
-        const w    = document.createElement('div');
+        const w = document.createElement('div');
         w.className = 'hcc-msg agent';
         w.innerHTML = `
-            <div class="hcc-msg-av" style="background:#1a1a2e">MR</div>
+            <div class="hcc-msg-av" style="background:#1a1a2e">${AGENT_INITIALS}</div>
             <div class="hcc-msg-wrap">
-                <div class="hcc-msg-name">Agent M. Rivera</div>
+                <div class="hcc-msg-name">${AGENT_NAME}</div>
                 <div class="hcc-msg-bub">${text}</div>
                 <div class="hcc-msg-time">Now · ${now}</div>
             </div>`;
@@ -1181,38 +1048,37 @@
     };
 
     /* ── agent status ─────────────────────────────────────────── */
-   /* ── agent status ─────────────────────────────────────────── */
-window.updateAgentStatus = function () {
-    const statusSelect = document.getElementById('agentStatusSelect');
-    const indicator    = document.getElementById('statusIndicator');
-    const status       = statusSelect.value;
+    window.updateAgentStatus = function () {
+        const statusSelect = document.getElementById('agentStatusSelect');
+        const indicator    = document.getElementById('statusIndicator');
+        const status       = statusSelect.value;
 
-    indicator.className = `hcd-status-indicator ${status}`;
+        indicator.className = `hcd-status-indicator ${status}`;
 
-    fetch('/Agent/UpdateAgentStatus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ agentName: 'Lolett69', status: status })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        if (!data.success) console.error('Failed to update status:', data.message);
-    })
-    .catch(function(e) { console.error('Could not reach server:', e); });
-};
+        fetch('/Agent/UpdateAgentStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agentName: AGENT_NAME, status: status })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.success) console.error('Failed to update status:', data.message);
+        })
+        .catch(function(e) { console.error('Could not reach server:', e); });
+    };
 
-/* ── load saved status on page init ──────────────────────── */
-fetch('/Agent/GetAgentStatus?agentName=Lolett69')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        if (data.success) {
-            const sel = document.getElementById('agentStatusSelect');
-            const ind = document.getElementById('statusIndicator');
-            if (sel) sel.value = data.status;
-            if (ind) ind.className = 'hcd-status-indicator ' + data.status;
-        }
-    })
-    .catch(function(e) { console.error('Could not load agent status:', e); });
+    /* ── load saved status on page init ──────────────────────── */
+    fetch('/Agent/GetAgentStatus?agentName=' + encodeURIComponent(AGENT_NAME))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.success) {
+                const sel = document.getElementById('agentStatusSelect');
+                const ind = document.getElementById('statusIndicator');
+                if (sel) sel.value = data.status;
+                if (ind) ind.className = 'hcd-status-indicator ' + data.status;
+            }
+        })
+        .catch(function(e) { console.error('Could not load agent status:', e); });
 
     /* ── save status ──────────────────────────────────────────── */
     window.hcSaveStatus = function () {
