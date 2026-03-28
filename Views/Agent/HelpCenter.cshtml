@@ -416,6 +416,80 @@
     font-size: 10px; font-weight: 800; text-transform: uppercase;
     letter-spacing: .8px; color: #aaa;
 }
+
+/* Agent Status Section */
+.hcd-agent-status-section {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.hcd-status-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: #bbb;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.hcd-status-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.hcd-status-dropdown {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    padding: 8px 12px;
+    color: #333;
+    background: #fafafa;
+    outline: none;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.hcd-status-dropdown:hover {
+    border-color: #d0d0d0;
+    background: #f5f5f5;
+}
+
+.hcd-status-dropdown:focus {
+    border-color: #1a1a2e;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.1);
+}
+
+/* Status indicator dot */
+.hcd-status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background .3s;
+}
+
+.hcd-status-indicator.available {
+    background: #27ae60;
+}
+
+.hcd-status-indicator.break {
+    background: #e67e22;
+}
+
+.hcd-status-indicator.lunch {
+    background: #3498db;
+}
+
+.hcd-status-indicator.eos {
+    background: #e74c3c;
+}
+
 .hcd-pri {
     font-size: 10px; font-weight: 800; padding: 3px 10px;
     border-radius: 20px; text-transform: uppercase; letter-spacing: .4px;
@@ -536,7 +610,7 @@
         <div class="hcl-header">
             <div class="hcl-toprow">
     <div>
-        <div class="hcl-title">Waiting Lines</div>
+        <div class="hcl-title">Today's Record</div>
         <div class="hcl-sub">Queueing and resolved support tickets</div>
     </div>
 </div>
@@ -546,10 +620,6 @@
     <div style="flex:1;background:#f7f8fa;border:1px solid #eee;border-radius:10px;padding:10px 12px;text-align:center">
         <div style="font-size:20px;font-weight:800;color:#1a1a2e" id="statQueueing">0</div>
         <div style="font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Queueing</div>
-    </div>
-    <div style="flex:1;background:#fdecea;border:1px solid #f5c6c6;border-radius:10px;padding:10px 12px;text-align:center">
-        <div style="font-size:20px;font-weight:800;color:#e74c3c" id="statUrgent">0</div>
-        <div style="font-size:10px;font-weight:600;color:#e74c3c;text-transform:uppercase;letter-spacing:.5px;margin-top:2px">Urgent</div>
     </div>
     <div style="flex:1;background:#e8f8ee;border:1px solid #b2dfcc;border-radius:10px;padding:10px 12px;text-align:center">
         <div style="font-size:20px;font-weight:800;color:#27ae60" id="statResolved">0</div>
@@ -652,6 +722,20 @@
         </div>
 
         <div id="hcDetailPanel">
+
+            <!-- Agent Status Section (Top of Ticket Detail) -->
+            <div class="hcd-agent-status-section">
+                <div class="hcd-status-label">Your Status</div>
+                <div class="hcd-status-wrapper">
+                    <div class="hcd-status-indicator available" id="statusIndicator"></div>
+                    <select class="hcd-status-dropdown" id="agentStatusSelect" onchange="updateAgentStatus()">
+                        <option value="available">Available</option>
+                        <option value="break">Break</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="eos">EOS</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="hcd-lbar">
                 <span class="hcd-lbar-title">Ticket Detail</span>
@@ -1094,6 +1178,26 @@
         body.appendChild(w);
         body.scrollTop = body.scrollHeight;
         inp.value = '';
+    };
+
+    /* ── agent status ─────────────────────────────────────────── */
+    window.updateAgentStatus = function () {
+        const statusSelect = document.getElementById('agentStatusSelect');
+        const indicator = document.getElementById('statusIndicator');
+        const status = statusSelect.value;
+
+        // Update indicator color
+        indicator.className = `hcd-status-indicator ${status}`;
+
+        // You can add API call here to save status to database
+        console.log(`Agent status updated to: ${status}`);
+
+        // Example: Uncomment to send to server
+        // fetch('/Agent/UpdateStatus', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ status: status })
+        // }).then(r => r.json()).catch(e => console.error(e));
     };
 
     /* ── save status ──────────────────────────────────────────── */
