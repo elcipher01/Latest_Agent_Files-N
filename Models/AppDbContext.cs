@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 namespace NextHorizon.Models
 {
     public class AppDbContext : DbContext
@@ -7,7 +6,7 @@ namespace NextHorizon.Models
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-
         public DbSet<FAQ> FAQs { get; set; }
+        public DbSet<Agent> Agents { get; set; }
     }
 }

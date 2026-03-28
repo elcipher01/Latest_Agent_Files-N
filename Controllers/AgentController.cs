@@ -13,20 +13,17 @@ namespace NextHorizon.Controllers
             _context = context;
         }
 
-        // Help Center main page
         public IActionResult HelpCenter()
         {
             return View();
         }
 
-        // FAQ List
         public async Task<IActionResult> FAQs()
         {
             var faqs = await _context.FAQs.ToListAsync();
             return View(faqs);
         }
 
-        // FAQ Create
         public IActionResult CreateFAQ()
         {
             return View();
@@ -46,7 +43,6 @@ namespace NextHorizon.Controllers
             return View(faq);
         }
 
-        // FAQ Edit
         public async Task<IActionResult> EditFAQ(int id)
         {
             var faq = await _context.FAQs.FindAsync(id);
@@ -67,7 +63,6 @@ namespace NextHorizon.Controllers
             return View(faq);
         }
 
-        // FAQ Delete
         [HttpPost]
         public async Task<IActionResult> DeleteFAQ(int id)
         {
@@ -79,5 +74,61 @@ namespace NextHorizon.Controllers
             }
             return RedirectToAction("FAQs");
         }
+
+        // ── AGENT STATUS ──────────────────────────────────────────
+
+        [HttpGet]
+        public async Task<IActionResult> GetAgentStatus(string agentName)
+        {
+            var agent = await _context.Agents
+                .Where(a => a.AgentName == agentName)
+                .OrderByDescending(a => a.StartTime)
+                .FirstOrDefaultAsync();
+
+            var status = agent?.AgentStatus ?? "available";
+            return Json(new { success = true, status = status });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAgentStatus([FromBody] UpdateAgentStatusRequest model)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.AgentName) || string.IsNullOrWhiteSpace(model.Status))
+                return BadRequest(new { success = false, message = "Invalid request." });
+
+            var agentRecord = await _context.Agents
+                .Where(a => a.AgentName == model.AgentName)
+                .OrderByDescending(a => a.StartTime)
+                .FirstOrDefaultAsync();
+
+            if (agentRecord != null)
+            {
+                agentRecord.AgentStatus = model.Status;
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, status = model.Status });
+            }
+
+            // No record exists yet — create one
+            var newRecord = new Agent
+            {
+                AgentName = model.AgentName,
+                ClientName = "N/A",
+                Category = "N/A",
+                PreviewQuestion = "N/A",
+                ChatSlot = 1,
+                ChatStatus = "Active",
+                AgentStatus = model.Status,
+                StartTime = DateTime.Now
+            };
+
+            _context.Agents.Add(newRecord);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, status = model.Status });
+        }
+    }
+
+    public class UpdateAgentStatusRequest
+    {
+        public string AgentName { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }

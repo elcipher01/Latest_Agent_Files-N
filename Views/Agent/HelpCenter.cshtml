@@ -1181,24 +1181,38 @@
     };
 
     /* ── agent status ─────────────────────────────────────────── */
-    window.updateAgentStatus = function () {
-        const statusSelect = document.getElementById('agentStatusSelect');
-        const indicator = document.getElementById('statusIndicator');
-        const status = statusSelect.value;
+   /* ── agent status ─────────────────────────────────────────── */
+window.updateAgentStatus = function () {
+    const statusSelect = document.getElementById('agentStatusSelect');
+    const indicator    = document.getElementById('statusIndicator');
+    const status       = statusSelect.value;
 
-        // Update indicator color
-        indicator.className = `hcd-status-indicator ${status}`;
+    indicator.className = `hcd-status-indicator ${status}`;
 
-        // You can add API call here to save status to database
-        console.log(`Agent status updated to: ${status}`);
+    fetch('/Agent/UpdateAgentStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agentName: 'Lolett69', status: status })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (!data.success) console.error('Failed to update status:', data.message);
+    })
+    .catch(function(e) { console.error('Could not reach server:', e); });
+};
 
-        // Example: Uncomment to send to server
-        // fetch('/Agent/UpdateStatus', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ status: status })
-        // }).then(r => r.json()).catch(e => console.error(e));
-    };
+/* ── load saved status on page init ──────────────────────── */
+fetch('/Agent/GetAgentStatus?agentName=Lolett69')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.success) {
+            const sel = document.getElementById('agentStatusSelect');
+            const ind = document.getElementById('statusIndicator');
+            if (sel) sel.value = data.status;
+            if (ind) ind.className = 'hcd-status-indicator ' + data.status;
+        }
+    })
+    .catch(function(e) { console.error('Could not load agent status:', e); });
 
     /* ── save status ──────────────────────────────────────────── */
     window.hcSaveStatus = function () {
