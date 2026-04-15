@@ -28,7 +28,7 @@ namespace NextHorizon.Models
         public string PreviewQuestion { get; set; } = string.Empty;
 
         [Required]
-        public byte ChatSlot { get; set; }
+        public int ChatSlot { get; set; }
 
         [Required]
         [MaxLength(20)]
