@@ -548,7 +548,22 @@
             </div>
         </div>
         <div class="hcl-list" id="hclList">
-            <div class="hc-loading"><i class="fas fa-circle-notch"></i> Loading tickets...</div>
+            <!-- CHATSLOT SEPARATED DIVS-->
+            <div id="slot-1" class="hcl-slot empty">
+                <div class="hcl-slot-title">Chat Slot 1</div>
+                <div class="hcl-slot-meta">No ticket assigned</div>
+            </div>
+
+            
+            <div id="slot-2" class="hcl-slot empty">
+                <div class="hcl-slot-title">Chat Slot 2</div>
+                <div class="hcl-slot-meta">No ticket assigned</div>
+            </div>
+
+            <div id="slot-3" class="hcl-slot empty">
+                <div class="hcl-slot-title">Chat Slot 3</div>
+                <div class="hcl-slot-meta">No ticket assigned</div>
+            </div>
         </div>
     </div>
 
@@ -625,11 +640,9 @@
                 <div class="hcd-status-wrapper">
                     <div class="hcd-status-indicator available" id="statusIndicator"></div>
                     <select class="hcd-status-dropdown" id="agentStatusSelect" onchange="updateAgentStatus()">
-                         <option value="inchat">In Chat</option>
                          <option value="available">Available</option>
-                         <option value="break">Break</option>
-                         <option value="lunch">Lunch</option>
-                         <option value="eos">EOS</option>
+                         <option value="active">Active</option>
+                         <option value="unavailable">Unavailable</option>
                          <option value="acw">ACW</option>
                      </select>
                 </div>
@@ -832,18 +845,19 @@
     function renderList() {
         var rows = filtered();
         var list = document.getElementById('hclList');
-        list.innerHTML = '';
 
         if (activeTab === 'assigned') {
             var slots = rows.slice(0, 3);
 
+            // Populate the 3 static chat slots
             for (var i = 0; i < 3; i++) {
                 var conv = slots[i];
-                var slot = document.createElement('div');
                 var slotNumber = i + 1;
-                var slotId = 'chatSlot' + slotNumber;
+                var slotId = 'slot-' + slotNumber;
+                var slot = document.getElementById(slotId);
+                if (!slot) continue;
+
                 var isActive = conv && conv.id === selId;
-                slot.id = slotId;
                 slot.className = 'hcl-slot' + (isActive ? ' active' : '') + (conv ? '' : ' empty');
 
                 if (conv) {
@@ -867,19 +881,28 @@
                         '</div>' +
                         '<span class="hcl-slot-status ' + slotStatusClass + '">' + slotStatus + '</span>';
                 } else {
+                    slot.onclick = null;
                     slot.innerHTML =
                         '<div class="hcl-slot-title">Chat Slot ' + slotNumber + '</div>' +
                         '<div class="hcl-slot-meta">No ticket assigned</div>';
                 }
-
-                list.appendChild(slot);
             }
 
             return;
         }
 
+        // For non-assigned tabs, clear slots and show ticket list
+        var slotsContainer = list.querySelector('.hcl-slot');
+        if (slotsContainer) {
+            // Hide all slots
+            list.querySelectorAll('.hcl-slot').forEach(function(el) { el.style.display = 'none'; });
+        }
+
         if (!rows.length) {
-            list.innerHTML = '<div style="padding:40px;text-align:center;color:#bbb;font-size:13px">No tickets found.</div>';
+            var noResultsMsg = document.createElement('div');
+            noResultsMsg.style.cssText = 'padding:40px;text-align:center;color:#bbb;font-size:13px';
+            noResultsMsg.textContent = 'No tickets found.';
+            list.appendChild(noResultsMsg);
             return;
         }
 
