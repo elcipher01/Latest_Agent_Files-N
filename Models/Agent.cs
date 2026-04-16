@@ -35,9 +35,6 @@ namespace NextHorizon.Models
         [MaxLength(20)]
         public string ChatStatus { get; set; } = "Active";
 
-        public DateTime StartTime { get; set; } = DateTime.Now;
-        public DateTime? EndTime { get; set; }
-
         [Required]
         [MaxLength(20)]
         public string AgentStatus { get; set; } = "Online";
